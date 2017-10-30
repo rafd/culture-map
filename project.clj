@@ -11,7 +11,8 @@
                  [org.clojure/clojurescript "1.9.908"]
                  [garden "1.3.2"]
                  [reagent "0.8.0-alpha1"]
-                 [re-frame "0.10.1"]]
+                 [re-frame "0.10.1"]
+                 [cljs-ajax "0.7.2"]]
 
   :plugins [[lein-figwheel "0.5.13"]]
 

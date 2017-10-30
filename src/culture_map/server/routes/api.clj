@@ -5,4 +5,9 @@
 
 (defroutes routes
 
-  (context "/api" _))
+  (context "/api" _
+
+    (GET "/initial-data" _
+      {:status 200
+       :body db/data})))
+

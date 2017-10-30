@@ -9,6 +9,6 @@
 (def app
   (routes
     (-> api/routes
-        (wrap-restful-format :formats [:transit-json])
+        (wrap-restful-format :formats [:json :transit-json])
         compojure.handler/api)
     (-> spa/routes)))
