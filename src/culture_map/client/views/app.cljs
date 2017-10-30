@@ -1,22 +1,21 @@
 (ns culture-map.client.views.app
   (:require
-    [culture-map.client.state :refer [state]]))
+    [re-frame.core :refer [subscribe dispatch]]))
 
 (defn customs-list-view []
   [:div.customs-list
-   (for [custom (@state :customs)]
+   (for [custom @(subscribe [:customs])]
      [:div.custom
       {:key (custom :id)
        :on-click
        (fn [_]
-         (swap! state
-           (fn [prev-state]
-             (assoc prev-state :active-custom-id (custom :id)))))}
+         (dispatch [:set-active-custom-id (custom :id)]))}
+
       (custom :name)])])
 
 (defn active-custom-view []
-  (let [custom-id (@state :active-custom-id)
-        custom (->> (@state :customs)
+  (let [custom-id @(subscribe [:active-custom-id])
+        custom (->> @(subscribe [:customs])
                     (filter (fn [custom]
                               (= (custom :id) custom-id)))
                     first)]
@@ -30,7 +29,7 @@
             [:h2 (variant :name)]
             (doall
               (for [country-id (variant :country-ids)]
-                (let [country (->> (@state :countries)
+                (let [country (->> @(subscribe [:countries])
                                    (filter (fn [country]
                                              (= (country :id) country-id)))
                                    first)]
