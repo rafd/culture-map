@@ -6,10 +6,16 @@
   (fn [db _]
     (db :customs)))
 
-(reg-sub :countries
-  (fn [db _]
-    (db :countries)))
+(reg-sub :country
+  (fn [db [_ id]]
+    (->> (db :countries)
+         (filter (fn [country]
+                   (= (country :id) id)))
+         first)))
 
-(reg-sub :active-custom-id
+(reg-sub :active-custom
   (fn [db _]
-    (db :active-custom-id)))
+    (->> (db :customs)
+         (filter (fn [custom]
+                   (= (custom :id) (db :active-custom-id))))
+         first)))
