@@ -1,6 +1,6 @@
 (ns culture-map.client.state.events
   (:require
-    [re-frame.core :refer [dispatch reg-fx reg-event-fx]]
+    [re-frame.core :refer [reg-fx reg-event-fx]]
     [culture-map.client.state.fx.ajax :refer [ajax-fx]]))
 
 (reg-fx :ajax ajax-fx)
@@ -20,8 +20,7 @@
   (fn [{db :db} _]
     {:ajax {:uri "/api/initial-data"
             :method :get
-            :on-success (fn [response]
-                          (dispatch [:handle-initial-data response]))}}))
+            :on-success :handle-initial-data}}))
 
 (reg-event-fx :handle-initial-data
   (fn [{db :db} [_ {:keys [customs countries]}]]
