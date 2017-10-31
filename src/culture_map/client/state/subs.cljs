@@ -4,18 +4,12 @@
 
 (reg-sub :customs
   (fn [db _]
-    (db :customs)))
+    (vals (db :customs))))
 
 (reg-sub :country
   (fn [db [_ id]]
-    (->> (db :countries)
-         (filter (fn [country]
-                   (= (country :id) id)))
-         first)))
+    (get-in db [:countries id])))
 
 (reg-sub :active-custom
   (fn [db _]
-    (->> (db :customs)
-         (filter (fn [custom]
-                   (= (custom :id) (db :active-custom-id))))
-         first)))
+    (get-in db [:customs (db :active-custom-id)])))

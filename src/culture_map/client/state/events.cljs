@@ -3,12 +3,18 @@
     [re-frame.core :refer [reg-fx reg-event-fx]]
     [culture-map.client.state.fx.ajax :refer [ajax-fx]]))
 
+(defn key-by-id [coll]
+  (reduce (fn [memo item]
+              (assoc memo (item :id) item))
+    {}
+    coll))
+
 (reg-fx :ajax ajax-fx)
 
 (reg-event-fx :init
   (fn [{db :db} _]
-    {:db {:customs []
-          :countries []
+    {:db {:customs {}
+          :countries {}
           :active-custom-id nil}
      :dispatch [:get-initial-data]}))
 
@@ -24,5 +30,5 @@
 
 (reg-event-fx :handle-initial-data
   (fn [{db :db} [_ {:keys [customs countries]}]]
-    {:db (assoc db :customs customs
-                   :countries countries)}))
+    {:db (assoc db :customs (key-by-id customs)
+                   :countries (key-by-id countries))}))
