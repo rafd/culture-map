@@ -45,4 +45,4 @@
                                    ;:pretty-print true}}]}
 
   :profiles {:uberjar {:aot :all
-                       :prep-tasks [["cljsbuild" "once" "release"]]}})
+                       :prep-tasks ["compile" ["cljsbuild" "once" "release"]]}})
