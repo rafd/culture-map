@@ -1,8 +1,0 @@
-language: clojure
-before_install:
-  - sudo apt-get install expect
-deploy:
-  provider: script
-  script: ./deploy.sh $USER $SERVER $PASSWORD
-  on:
-    branch: master
