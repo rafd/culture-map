@@ -15,7 +15,7 @@
                  [cljs-ajax "0.7.2"]]
 
   :plugins [[lein-figwheel "0.5.13"]
-            [lein-cljsbuild "1.1.7" :exclude [org.clojure/clojure]]]
+            [lein-cljsbuild "1.1.6" :exclude [org.clojure/clojure]]]
 
   :main culture-map.server.core
 
