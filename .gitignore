@@ -13,3 +13,4 @@ pom.xml.asc
 *.iml
 resources/public/js
 *.log
+config.edn
