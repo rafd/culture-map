@@ -7,7 +7,6 @@
 
   (context "/api" _
 
-    (GET "/initial-data" _
+    (GET "/records" _
       {:status 200
-       :body db/data})))
-
+       :body (db/get-records)})))

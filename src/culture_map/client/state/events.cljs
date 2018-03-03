@@ -24,11 +24,14 @@
 
 (reg-event-fx :get-initial-data
   (fn [{db :db} _]
-    {:ajax {:uri "/api/initial-data"
+    {:ajax {:uri "/api/records"
             :method :get
             :on-success :handle-initial-data}}))
 
 (reg-event-fx :handle-initial-data
-  (fn [{db :db} [_ {:keys [customs countries]}]]
-    {:db (assoc db :customs (key-by-id customs)
-                   :countries (key-by-id countries))}))
+  (fn [{db :db} [_ records]]
+    (let [grouped-records (group-by :type records)]
+      {:db (assoc db :customs (-> (get grouped-records "custom")
+                                  key-by-id)
+                     :countries (-> (get grouped-records "country")
+                                    key-by-id))})))

@@ -1,36 +1,24 @@
-(ns culture-map.server.db)
+(ns culture-map.server.db
+  (:require
+    [human-db.core :as human-db]
+    [human-db.persistors.github]
+    [human-db.processors.yaml]))
 
-(def data
-  {:customs [{:id 1
-              :name "driving side"
-              :variants [{:id 0
-                          :name "left"
-                          :country-ids [:england :japan]}
-                         {:id 1
-                          :name "right"
-                          :country-ids [:canada :poland]}]}
-             {:id 2
-              :name "bidet use"
-              :variants [{:id 0
-                          :name "common"
-                          :country-ids [:japan]}
-                         {:id 1
-                          :name "uncommon"
-                          :country-ids [:canada :poland]}]}
-             {:id 3
-              :name "same-sex marriage"
-              :variants [{:id 0
-                          :name "legal"
-                          :country-ids [:canada]}
-                         {:id 1
-                          :name "illegal"
-                          :country-ids [:poland]}]}]
+(def db-config
+  {:processor :yaml
+   :persistor {:type :github
+               :user "culture-map-bot"
+               :token ""
+               :repo "cannawen/culture-map-data"
+               :branch "dev"
+               :data-path "data"
+               :author {:name "Canna Wen"
+                        :email "cannawen@gmail.com"}
+               :committer {:name "Culture Map Bot"
+                           :email "cannawen+culture-map-bot@gmail.com"}}})
 
-   :countries [{:id :canada
-                :name "Canada"}
-               {:id :japan
-                :name "Japan"}
-               {:id :poland
-                :name "Poland"}
-               {:id :england
-                :name "England"}]})
+(defn save-record! [record]
+  (human-db/store-record! db-config (record :id) record))
+
+(defn get-records []
+  (human-db/get-records db-config))

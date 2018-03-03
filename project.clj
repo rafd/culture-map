@@ -6,6 +6,9 @@
                  [compojure "1.6.0"]
                  [ring-middleware-format "0.7.2"]
                  [hiccup "1.0.5"]
+                 [human-db/core "0.5.0"]
+                 [human-db/persistors.github "0.5.0"]
+                 [human-db/processors.yaml "0.5.0"]
 
                  ; client
                  [org.clojure/clojurescript "1.9.854"]
