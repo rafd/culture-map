@@ -28,14 +28,14 @@
                         :source-paths ["src/culture_map/client"]
                         :figwheel {:on-jsload "culture-map.client.core/reload"}
                         :compiler {:main "culture-map.client.core"
-                                   :asset-path "/js/out"
+                                   :asset-path "/js/out/dev"
                                    :output-to "resources/public/js/culture-map.js"
                                    :output-dir "resources/public/js/out/dev"}}
 
                        {:id "release"
                         :source-paths ["src/culture_map/client"]
                         :compiler {:main "culture-map.client.core"
-                                   :asset-path "/js/out"
+                                   :asset-path "/js/out/prod"
                                    :output-to "resources/public/js/culture-map.js"
                                    :output-dir "resources/public/js/out/prod"
                                    :optimizations :advanced}}]}
