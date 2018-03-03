@@ -10,6 +10,15 @@
   (fn [db [_ id]]
     (get-in db [:countries id])))
 
-(reg-sub :active-custom
+(reg-sub :countries
   (fn [db _]
-    (get-in db [:customs (db :active-custom-id)])))
+    (vals (db :countries))))
+
+(reg-sub :custom
+  (fn [db [_ id]]
+    (get-in db [:customs id])))
+
+(reg-sub :page
+  (fn [db _]
+    (db :page)))
+

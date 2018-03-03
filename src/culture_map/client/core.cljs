@@ -3,7 +3,7 @@
     [reagent.core :as r]
     [culture-map.client.state.subs]
     [culture-map.client.state.events]
-    [re-frame.core :refer [dispatch]]
+    [re-frame.core :refer [dispatch-sync]]
     [culture-map.client.views.app :refer [app-view]]))
 
 (enable-console-print!)
@@ -13,8 +13,8 @@
     (.. js/document (getElementById "app"))))
 
 (defn ^:export init []
-  (render)
-  (dispatch [:init]))
+  (dispatch-sync [:init])
+  (render))
 
 (defn ^:export reload []
   (render))
