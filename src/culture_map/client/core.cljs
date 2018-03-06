@@ -1,9 +1,7 @@
 (ns culture-map.client.core
   (:require
     [reagent.core :as r]
-    [culture-map.client.state.subs]
-    [culture-map.client.state.events]
-    [re-frame.core :refer [dispatch-sync]]
+    [culture-map.client.state.core :refer [dispatch-sync]]
     [culture-map.client.views.app :refer [app-view]]))
 
 (enable-console-print!)

@@ -1,6 +1,7 @@
 (ns culture-map.client.state.events
   (:require
     [re-frame.core :refer [reg-fx reg-event-fx]]
+    [culture-map.client.state.eav :as eav]
     [culture-map.client.state.fx.ajax :refer [ajax-fx]]))
 
 (defn key-by-id [coll]
@@ -12,93 +13,75 @@
 (reg-fx :ajax ajax-fx)
 
 (reg-event-fx :init
-  (fn [{db :db} _]
-    {:db {:customs {}
-          :countries {}
-          :page {:type :home}}
-     :dispatch [:get-initial-data]}))
+  (fn [_ _]
+    {:dispatch-n [[:set-page :home {}]
+                  [:get-initial-data]]}))
+
+(reg-event-fx :set-page
+  (fn [_ [_ id data]]
+    {:transact [{:db/global :page
+                 :page/id id
+                 :page/data data}]}))
 
 (reg-event-fx :set-active-custom-id
-  (fn [{db :db} [_ id]]
-    {:db (assoc db :page {:type :custom
-                          :custom-id id
-                          :editing? false})}))
+  (fn [_ [_ id]]
+    {:dispatch [:set-page :custom {:custom-id id
+                                   :editing? false}]}))
 
 (reg-event-fx :get-initial-data
-  (fn [{db :db} _]
+  (fn [_ _]
     {:ajax {:uri "/api/records"
             :method :get
             :on-success :handle-initial-data}}))
 
 (reg-event-fx :new-custom
-  (fn [{db :db} _]
-    (let [custom {:id (random-uuid)
-                  :name ""
-                  :type "custom"
-                  :variants []}]
-      {:db (-> db
-               (assoc :page {:type :custom
-                             :custom-id (custom :id)
-                             :editing? true})
-               (assoc-in [:customs (custom :id)] custom))})))
+  (fn [_ _]
+    (let [custom {:custom/id (random-uuid)
+                  :custom/name ""
+                  :custom/type "custom"
+                  :custom/variants []}]
+      {:transact [custom]
+       :dispatch [:set-page :custom {:custom-id (custom :custom/id)
+                                     :editing? true}]})))
 
 (reg-event-fx :update-custom-name
-  (fn [{db :db} [_ custom-id value]]
-    {:db (assoc-in db [:customs custom-id :name] value)}))
+  (fn [_ [_ custom-id value]]
+    {:transact [{:custom/id custom-id
+                 :custom/name value}]}))
 
 (reg-event-fx :update-custom-variant-name
-  (fn [{db :db} [_ custom-id variant-id value]]
-    {:db (update-in
-           db
-           [:customs custom-id :variants]
-           (fn [variants]
-             (mapv
-               (fn [variant]
-                 (if (= (variant :id) variant-id)
-                   (assoc variant :name value)
-                   variant))
-               variants)))}))
-
-(reg-event-fx :new-custom-variant-country
-  (fn [{db :db} [_ custom-id variant-id]]
-    {:db (update-in
-           db
-           [:customs custom-id :variants]
-           (fn [variants]
-             (mapv
-               (fn [variant]
-                 (if (= (variant :id) variant-id)
-                   (update variant :country-ids conj nil)
-                   variant))
-               variants)))}))
+  (fn [_ [_ custom-id variant-id value]]
+    {:transact [{:variant/id variant-id
+                 :variant/name value}]}))
 
 (reg-event-fx :add-custom-variant-country
-  (fn [{db :db} [_ custom-id variant-id country-id]]
-    {:db (update-in
-           db
-           [:customs custom-id :variants]
-           (fn [variants]
-             (mapv
-               (fn [variant]
-                 (if (= (variant :id) variant-id)
-                   (-> variant
-                       (update :country-ids conj country-id)
-                       (update :country-ids (fn [ids]
-                                              (vec (remove nil? ids)))))
-                   variant))
-               variants)))}))
+  (fn [_ [_ custom-id variant-id country-id]]
+    {:transact [{:variant/id variant-id
+                 :variant/country-ids country-id}]}))
 
 (reg-event-fx :new-custom-variant
-  (fn [{db :db} [_ custom-id]]
-    (let [variant {:country-ids []
-                   :id (random-uuid)
-                   :name ""}]
-      {:db (update-in db [:customs custom-id :variants] conj variant)})))
+  (fn [_ [_ custom-id]]
+    (let [variant {:variant/country-ids []
+                   :variant/id (random-uuid)
+                   :variant/name ""}]
+      {:transact [variant
+                  {:custom/id custom-id
+                   :custom/variants (variant :variant/id)}]})))
 
 (reg-event-fx :handle-initial-data
-  (fn [{db :db} [_ records]]
-    (let [grouped-records (group-by :type records)]
-      {:db (assoc db :customs (-> (get grouped-records "custom")
-                                  key-by-id)
-                     :countries (-> (get grouped-records "country")
-                                    key-by-id))})))
+  (fn [_ [_ records]]
+    {:transact (->> records
+                    ; namespace each key based on the type of entity
+                    eav/recs->eavs
+                    (group-by first)
+                    (mapcat (fn [[e eavs]]
+                              (let [e-type (->> eavs
+                                                (filter (fn [[e a v]]
+                                                          (= a :type)))
+                                                last
+                                                last)]
+                                (->> eavs
+                                     (map (fn [[e a v]]
+                                            [e (keyword e-type a) v]))))))
+                    (map (fn [eav]
+                           (concat [:db/add] eav))))}))

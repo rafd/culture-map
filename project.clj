@@ -14,6 +14,8 @@
                  [org.clojure/clojurescript "1.9.854"]
                  [garden "1.3.2"]
                  [reagent "0.8.0-alpha2"]
+                 [re-posh "0.1.5"]
+                 [datascript "0.16.3"]
                  [re-frame "0.10.1"]
                  [cljs-ajax "0.7.2"]]
 

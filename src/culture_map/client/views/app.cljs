@@ -1,16 +1,18 @@
 (ns culture-map.client.views.app
   (:require
-    [re-frame.core :refer [subscribe dispatch]]))
+    [reagent.core :as r]
+    [culture-map.client.state.core :refer [subscribe dispatch]]))
 
 (defn customs-list-view []
   [:div.customs-list
-   (for [custom @(subscribe [:customs])]
-     [:div.custom
-      {:key (custom :id)
-       :on-click
-       (fn [_]
-         (dispatch [:set-active-custom-id (custom :id)]))}
-      (custom :name)])
+   (doall
+     (for [custom @(subscribe [:customs])]
+       [:div.custom
+        {:key (custom :custom/id)
+         :on-click
+         (fn [_]
+           (dispatch [:set-active-custom-id (custom :custom/id)]))}
+        (custom :custom/name)]))
    [:button {:on-click
              (fn [_]
                (dispatch [:new-custom]))}
@@ -32,41 +34,48 @@
                  {:key country-id}
                  (country :name)])))]))]))
 
+(defn add-country-view [custom-id variant-id]
+  (let [pick? (r/atom false)]
+    (fn []
+      (if @pick?
+        [:div {:key 0}
+         [:select {:on-change (fn [e]
+                                (dispatch [:add-custom-variant-country custom-id variant-id (.. e -target -value)])
+                                (reset! pick? false))}
+          [:option {:value nil} ""]
+          (doall
+            (for [country @(subscribe [:countries])]
+              [:option {:key (country :country/id)
+                        :value (country :country/id)}
+               (country :country/name)]))]]
+        [:button {:on-click
+                  (fn [_]
+                    (reset! pick? true))}
+         "Add country"]))))
+
 (defn custom-editor-view [custom-id]
   (when-let [custom @(subscribe [:custom custom-id])]
-    (println custom)
     [:div.active-custom
-     [:input {:value (custom :name)
+     [:input {:value (custom :custom/name)
               :on-change
               (fn [e]
                 (dispatch [:update-custom-name custom-id (.. e -target -value)]))}]
      (doall
-       (for [variant (custom :variants)]
-         [:div.variant
-          {:key (variant :id)}
-          [:input {:value (variant :name)
-                   :on-change
-                   (fn [e]
-                     (dispatch [:update-custom-variant-name custom-id (variant :id) (.. e -target -value)]))}]
-          (doall
-            (for [country-id (variant :country-ids)]
-              (if (nil? country-id)
-                [:div {:key 0}
-                 [:select {:on-change (fn [e]
-                                        (dispatch [:add-custom-variant-country custom-id (variant :id) (.. e -target -value)]))}
-                  [:option {:value nil} ""]
-                  (for [country @(subscribe [:countries])]
-                    [:option {:key (country :id)
-                              :value (country :id)}
-                     (country :name)])]]
+       (for [variant-id (custom :custom/variants)]
+         (let [variant @(subscribe [:variant variant-id])]
+           [:div.variant
+            {:key (variant :variant/id)}
+            [:input {:value (variant :variant/name)
+                     :on-change
+                     (fn [e]
+                       (dispatch [:update-custom-variant-name custom-id (variant :variant/id) (.. e -target -value)]))}]
+            (doall
+              (for [country-id (variant :variant/country-ids)]
                 (let [country @(subscribe [:country country-id])]
                   [:div.country
                    {:key country-id}
-                   (country :name)]))))
-          [:button {:on-click
-                    (fn [_]
-                      (dispatch [:new-custom-variant-country custom-id (variant :id)]))}
-           "Add country"]]))
+                   (country :country/name)])))
+            [add-country-view custom-id variant-id]])))
      [:button {:on-click
                (fn [_]
                  (dispatch [:new-custom-variant custom-id]))}
@@ -76,9 +85,10 @@
   [:div.app
    [:h1 "Culture Map"]
    [customs-list-view]
-   (let [page @(subscribe [:page])]
-     (case (page :type)
+   (let [[id data] @(subscribe [:page])]
+     (case id
        :home [:div]
-       :custom (if (page :editing?)
-                 [custom-editor-view (page :custom-id)]
-                 [custom-view (page :custom-id)])))])
+       :custom (if (data :editing?)
+                 [custom-editor-view (data :custom-id)]
+                 [custom-view (data :custom-id)])
+       nil))])
