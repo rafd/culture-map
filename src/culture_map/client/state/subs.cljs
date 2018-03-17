@@ -4,7 +4,7 @@
     [posh.reagent :as p]
     [reagent.ratom :as r]
     [re-posh.db :refer [store]]
-    [re-posh.core :refer [reg-query-sub]]))
+    [re-posh.core :refer [reg-query-sub reg-pull-sub]]))
 
 (defn reg-sub-pull
   [sub-name query-pattern pull-pattern]
@@ -40,7 +40,11 @@
   '[:find ?e .
     :in $ ?id
     :where [?e :custom/id ?id]]
-  '[*])
+  '[:custom/id
+    :custom/name
+    {:custom/variants [:variant/id
+                       :variant/name
+                       :variant/country-ids]}])
 
 (reg-sub-pull :customs
   '[:find [?e ...]

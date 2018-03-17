@@ -21,18 +21,18 @@
 (defn custom-view [custom-id]
   (when-let [custom @(subscribe [:custom custom-id])]
     [:div.active-custom
-     [:h1 (custom :name)]
+     [:h1 (custom :custom/name)]
      (doall
-       (for [variant (custom :variants)]
+       (for [variant (custom :custom/variants)]
          [:div.variant
-          {:key (variant :id)}
-          [:h2 (variant :name)]
+          {:key (variant :variant/id)}
+          [:h2 (variant :variant/name)]
           (doall
-            (for [country-id (variant :country-ids)]
+            (for [country-id (variant :variant/country-ids)]
               (let [country @(subscribe [:country country-id])]
                 [:div.country
                  {:key country-id}
-                 (country :name)])))]))]))
+                 (country :country/name)])))]))]))
 
 (defn add-country-view [custom-id variant-id]
   (let [pick? (r/atom false)]

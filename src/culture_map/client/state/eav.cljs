@@ -1,8 +1,13 @@
 (ns culture-map.client.state.eav
   "Provides facilities for turning records into EAVs and back.")
 
+(defn abs [int]
+  (if (pos-int? int)
+    int
+    (* -1 int)))
+
 (defn ->id [obj]
-  (hash obj))
+  (abs (hash obj)))
 
 (defn recs->eavs
   "Converts vector of records to their corresponding EAVs.
