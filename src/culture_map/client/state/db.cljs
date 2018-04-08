@@ -8,8 +8,10 @@
    :custom/id {:db/unique :db.unique/identity}
    :variant/id {:db/unique :db.unique/identity}
    :country/id {:db/unique :db.unique/identity}
-   :custom/variants {:db/cardinality :db.cardinality/many}
-   :variant/country-ids {:db/cardinality :db.cardinality/many}})
+   :custom/variants {:db/valueType :db.type/ref
+                     :db/cardinality :db.cardinality/many}
+   :variant/country-ids {:db/valueType :db.type/ref
+                         :db/cardinality :db.cardinality/many}})
 
 (defonce conn (d/create-conn schema))
 (defonce _ (connect! conn))
@@ -30,5 +32,5 @@
  ; variant
  [2 :variant/id "uuid"]
  [2 :variant/name "left"]
- [2 :variant/country-ids "japan"]
- ]
+ [2 :variant/country-ids "japan"]]
+

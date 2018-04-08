@@ -28,11 +28,10 @@
           {:key (variant :variant/id)}
           [:h2 (variant :variant/name)]
           (doall
-            (for [country-id (variant :variant/country-ids)]
-              (let [country @(subscribe [:country country-id])]
+            (for [country (variant :variant/country-ids)]
                 [:div.country
-                 {:key country-id}
-                 (country :country/name)])))]))]))
+               {:key (country :country/id)}
+               (country :country/name)]))]))]))
 
 (defn add-country-view [custom-id variant-id]
   (let [pick? (r/atom false)]
@@ -61,8 +60,7 @@
               (fn [e]
                 (dispatch [:update-custom-name custom-id (.. e -target -value)]))}]
      (doall
-       (for [variant-id (custom :custom/variants)]
-         (let [variant @(subscribe [:variant variant-id])]
+       (for [variant (custom :custom/variants)]
            [:div.variant
             {:key (variant :variant/id)}
             [:input {:value (variant :variant/name)
@@ -70,12 +68,11 @@
                      (fn [e]
                        (dispatch [:update-custom-variant-name custom-id (variant :variant/id) (.. e -target -value)]))}]
             (doall
-              (for [country-id (variant :variant/country-ids)]
-                (let [country @(subscribe [:country country-id])]
+            (for [country (variant :variant/country-ids)]
                   [:div.country
-                   {:key country-id}
-                   (country :country/name)])))
-            [add-country-view custom-id variant-id]])))
+               {:key (country :country/id)}
+               (country :country/name)]))
+          [add-country-view custom-id (variant :variant/id)]]))
      [:button {:on-click
                (fn [_]
                  (dispatch [:new-custom-variant custom-id]))}

@@ -57,16 +57,16 @@
 (reg-event-fx :add-custom-variant-country
   (fn [_ [_ custom-id variant-id country-id]]
     {:transact [{:variant/id variant-id
-                 :variant/country-ids country-id}]}))
+                 :variant/country-ids [{:country/id country-id}]}]}))
 
 (reg-event-fx :new-custom-variant
   (fn [_ [_ custom-id]]
-    (let [variant {:variant/country-ids []
-                   :variant/id (random-uuid)
-                   :variant/name ""}]
-      {:transact [variant
-                  {:custom/id custom-id
-                   :custom/variants (variant :variant/id)}]})))
+    {:transact [{:db/id "variantid"
+                 :variant/country-ids []
+                 :variant/id (random-uuid)
+                 :variant/name "variant"}
+                {:custom/id custom-id
+                 :custom/variants "variantid"}]}))
 
 (reg-event-fx :handle-initial-data
   (fn [_ [_ records]]

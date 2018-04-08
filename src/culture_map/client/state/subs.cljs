@@ -26,12 +26,6 @@
           :else ; nil
           result)))))
 
-(reg-sub-pull :country
-  '[:find ?e .
-    :in $ ?id
-    :where [?e :country/id ?id]]
-  '[*])
-
 (reg-sub-pull :countries
   '[:find [?e ...]
     :where [?e :country/id _]]
@@ -45,17 +39,12 @@
     :custom/name
     {:custom/variants [:variant/id
                        :variant/name
-                       :variant/country-ids]}])
+                       {:variant/country-ids [:country/id
+                                              :country/name]}]}])
 
 (reg-sub-pull :customs
   '[:find [?e ...]
     :where [?e :custom/id _]]
-  '[*])
-
-(reg-sub-pull :variant
-  '[:find ?e .
-    :in $ ?id
-    :where [?e :variant/id ?id]]
   '[*])
 
 (reg-query-sub :page
