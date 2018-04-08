@@ -11,7 +11,7 @@
     (.. js/document (getElementById "app"))))
 
 (defn ^:export init []
-  (dispatch-sync [:init])
+  (dispatch-sync [:init!])
   (render))
 
 (defn ^:export reload []

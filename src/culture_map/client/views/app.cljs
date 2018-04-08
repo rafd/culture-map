@@ -11,11 +11,11 @@
         {:key (custom :custom/id)
          :on-click
          (fn [_]
-           (dispatch [:set-active-custom-id (custom :custom/id)]))}
+           (dispatch [:set-active-custom-id! (custom :custom/id)]))}
         (custom :custom/name)]))
    [:button {:on-click
              (fn [_]
-               (dispatch [:new-custom]))}
+               (dispatch [:new-custom!]))}
     "New custom"]])
 
 (defn custom-view [custom-id]
@@ -39,7 +39,7 @@
       (if @pick?
         [:div {:key 0}
          [:select {:on-change (fn [e]
-                                (dispatch [:add-custom-variant-country custom-id variant-id (.. e -target -value)])
+                                (dispatch [:add-custom-variant-country! custom-id variant-id (.. e -target -value)])
                                 (reset! pick? false))}
           [:option {:value nil} ""]
           (doall
@@ -58,7 +58,7 @@
      [:input {:value (custom :custom/name)
               :on-change
               (fn [e]
-                (dispatch [:update-custom-name custom-id (.. e -target -value)]))}]
+                (dispatch [:update-custom-name! custom-id (.. e -target -value)]))}]
      (doall
        (for [variant (custom :custom/variants)]
          [:div.variant
@@ -66,7 +66,7 @@
           [:input {:value (variant :variant/name)
                    :on-change
                    (fn [e]
-                     (dispatch [:update-custom-variant-name custom-id (variant :variant/id) (.. e -target -value)]))}]
+                     (dispatch [:update-custom-variant-name! custom-id (variant :variant/id) (.. e -target -value)]))}]
           (doall
             (for [country (variant :variant/country-ids)]
               [:div.country
@@ -75,7 +75,7 @@
           [add-country-view custom-id (variant :variant/id)]]))
      [:button {:on-click
                (fn [_]
-                 (dispatch [:new-custom-variant custom-id]))}
+                 (dispatch [:new-custom-variant! custom-id]))}
       "Add variant"]]))
 
 (defn app-view []
