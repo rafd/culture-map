@@ -18,6 +18,11 @@ During development, make sure you have Dev Tools open, and 'Disable Cache' enabl
 
 You can include a `config.edn` file in the root of your project directory (ex. human-db config).
 
+### IntelliJ
+Run REPL for `culture-map` and run `(start! 5929)`
+
+In terminal, run `rlwrap lein figwheel`
+
 ## View it in action
 
 CI build: http://culture-map.cannawen.com/
