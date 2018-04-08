@@ -29,7 +29,7 @@
           [:h2 (variant :variant/name)]
           (doall
             (for [country (variant :variant/country-ids)]
-                [:div.country
+              [:div.country
                {:key (country :country/id)}
                (country :country/name)]))]))]))
 
@@ -61,15 +61,15 @@
                 (dispatch [:update-custom-name custom-id (.. e -target -value)]))}]
      (doall
        (for [variant (custom :custom/variants)]
-           [:div.variant
-            {:key (variant :variant/id)}
-            [:input {:value (variant :variant/name)
-                     :on-change
-                     (fn [e]
-                       (dispatch [:update-custom-variant-name custom-id (variant :variant/id) (.. e -target -value)]))}]
-            (doall
+         [:div.variant
+          {:key (variant :variant/id)}
+          [:input {:value (variant :variant/name)
+                   :on-change
+                   (fn [e]
+                     (dispatch [:update-custom-variant-name custom-id (variant :variant/id) (.. e -target -value)]))}]
+          (doall
             (for [country (variant :variant/country-ids)]
-                  [:div.country
+              [:div.country
                {:key (country :country/id)}
                (country :country/name)]))
           [add-country-view custom-id (variant :variant/id)]]))
