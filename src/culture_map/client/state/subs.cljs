@@ -17,6 +17,7 @@
           (->> @result
                (map (fn [id]
                       @(p/pull @store pull-pattern id)))
+               doall
                r/reaction)
 
           (some? @result) ; id
