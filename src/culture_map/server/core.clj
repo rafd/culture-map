@@ -28,4 +28,4 @@
   (stop-server!))
 
 (defn -main [& args]
-  (start! 5929))
+  (start! 8080))
