@@ -11,7 +11,7 @@
         {:key (custom :custom/id)
          :on-click
          (fn [_]
-           (dispatch [:set-active-custom-id! (custom :custom/id)]))}
+           (dispatch [:view-custom! (custom :custom/id)]))}
         (custom :custom/name)]))
    [:button {:on-click
              (fn [_]
@@ -87,7 +87,7 @@
                  (dispatch [:new-custom-variant! custom-id]))}
       "Add variant"]
      [:button {:on-click (fn [_]
-                           (dispatch [:set-active-custom-id! custom-id]))}
+                           (dispatch [:view-custom! custom-id]))}
       "Done"]]))
 
 (defn app-view []

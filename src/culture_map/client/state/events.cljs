@@ -23,7 +23,7 @@
                  :page/id id
                  :page/data data}]}))
 
-(reg-event-fx :set-active-custom-id!
+(reg-event-fx :view-custom!
   (fn [_ [_ id]]
     {:dispatch [:set-page! :custom {:custom-id id
                                     :editing? false}]}))
