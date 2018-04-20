@@ -49,6 +49,15 @@
     {:transact [{:custom/id custom-id
                  :custom/name value}]}))
 
+(reg-event-fx :new-custom-variant!
+  (fn [_ [_ custom-id]]
+    {:transact [{:db/id "variantid"
+                 :variant/country-ids []
+                 :variant/id (random-uuid)
+                 :variant/name "variant"}
+                {:custom/id custom-id
+                 :custom/variants "variantid"}]}))
+
 (reg-event-fx :update-custom-variant-name!
   (fn [_ [_ custom-id variant-id value]]
     {:transact [{:variant/id variant-id
@@ -62,15 +71,6 @@
 (reg-event-fx :remove-custom-variant-country!
   (fn [_ [_ custom-id variant-id country-id]]
     {:transact [[:db/retract [:variant/id variant-id] :variant/country-ids [:country/id country-id]]]}))
-
-(reg-event-fx :new-custom-variant!
-  (fn [_ [_ custom-id]]
-    {:transact [{:db/id "variantid"
-                 :variant/country-ids []
-                 :variant/id (random-uuid)
-                 :variant/name "variant"}
-                {:custom/id custom-id
-                 :custom/variants "variantid"}]}))
 
 (reg-event-fx :handle-initial-data!
   (fn [_ [_ records]]
