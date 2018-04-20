@@ -85,7 +85,10 @@
      [:button {:on-click
                (fn [_]
                  (dispatch [:new-custom-variant! custom-id]))}
-      "Add variant"]]))
+      "Add variant"]
+     [:button {:on-click (fn [_]
+                           (dispatch [:set-active-custom-id! custom-id]))}
+      "Done"]]))
 
 (defn app-view []
   [:div.app
