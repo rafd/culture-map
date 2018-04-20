@@ -22,6 +22,9 @@
   (when-let [custom @(subscribe [:custom custom-id])]
     [:div.active-custom
      [:h1 (custom :custom/name)]
+     [:button 
+      {:on-click (fn [_] (dispatch [:edit-custom! custom-id]))}
+      "Edit"]
      (doall
        (for [variant (custom :custom/variants)]
          [:div.variant

@@ -28,6 +28,11 @@
     {:dispatch [:set-page! :custom {:custom-id id
                                     :editing? false}]}))
 
+(reg-event-fx :edit-custom!
+  (fn [_ [_ custom-id]]
+    {:dispatch [:set-page! :custom {:custom-id custom-id
+                                    :editing? true}]}))
+
 (reg-event-fx :get-initial-data!
   (fn [_ _]
     {:ajax {:uri "/api/records"
