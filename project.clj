@@ -9,6 +9,7 @@
                  [human-db/core "0.5.0"]
                  [human-db/persistors.github "0.5.0"]
                  [human-db/processors.yaml "0.5.0"]
+                 [io.bloomventures/omni "0.10.2"]
 
                  ; client
                  [org.clojure/clojurescript "1.9.854"]

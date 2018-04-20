@@ -1,8 +1,8 @@
 (ns culture-map.client.state.events
   (:require
     [re-frame.core :refer [reg-fx reg-event-fx]]
-    [culture-map.client.state.eav :as eav]
-    [culture-map.client.state.fx.ajax :refer [ajax-fx]]))
+    [culture-map.client.state.fx.ajax :refer [ajax-fx]]
+    [bloom.omni.eav :as eav]))
 
 (defn key-by-id [coll]
   (reduce (fn [memo item]
@@ -71,17 +71,22 @@
 (reg-event-fx :handle-initial-data!
   (fn [_ [_ records]]
     {:transact (->> records
-                    ; namespace each key based on the type of entity
-                    eav/recs->eavs
-                    (group-by first)
-                    (mapcat (fn [[e eavs]]
-                              (let [e-type (->> eavs
-                                                (filter (fn [[e a v]]
-                                                          (= a :type)))
-                                                last
-                                                last)]
-                                (->> eavs
-                                     (map (fn [[e a v]]
-                                            [e (keyword e-type a) v]))))))
+                    vec
+                    (eav/namespace-keys (fn [r]
+                                          (keyword (r :type))))
+                    (eav/recs->eavs (fn [r]
+                                      (let [abs (fn [i]
+                                                  (if (pos-int? i)
+                                                    i
+                                                    (* -1 i)))]
+                                        (abs (hash (or
+                                                     (r :custom/id)
+                                                     (r :variant/id)
+                                                     (r :country/id))))))
+                                    {:custom/id :id
+                                     :variant/id :id
+                                     :country/id :id
+                                     :custom/variants  :embed-many
+                                     :variant/country-ids :reference-many})
                     (map (fn [eav]
-                           (concat [:db/add] eav))))}))
+                             (concat [:db/add] eav))))}))
