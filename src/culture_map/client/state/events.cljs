@@ -1,6 +1,7 @@
 (ns culture-map.client.state.events
   (:require
-    [re-frame.core :refer [reg-fx reg-event-fx]]
+    [datascript.core :as d]
+    [re-frame.core :refer [reg-fx reg-event-fx inject-cofx]]
     [culture-map.client.state.fx.ajax :refer [ajax-fx]]
     [bloom.omni.eav :as eav]))
 
@@ -48,6 +49,21 @@
       {:transact [custom]
        :dispatch [:set-page! :custom {:custom-id (custom :custom/id)
                                       :editing? true}]})))
+
+(reg-event-fx :remove-custom!
+  [(inject-cofx :ds)]
+  (fn [{ds :ds} [_ custom-id]]
+    (let [variant-eids (d/q '[:find [?variant-eid ...]
+                              :in $ ?custom-id
+                              :where 
+                              [?custom-eid :custom/id ?custom-id]
+                              [?custom-eid :custom/variants ?variant-eid]]
+                             ds
+                             custom-id)]
+      {:transact (concat [[:db.fn/retractEntity [:custom/id custom-id]]]
+                         (for [variant-eid variant-eids]
+                           [:db.fn/retractEntity variant-eid]))
+       :dispatch [:set-page! :home {}]})))
 
 (reg-event-fx :update-custom-name!
   (fn [_ [_ custom-id value]]

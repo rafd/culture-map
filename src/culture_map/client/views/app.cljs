@@ -87,6 +87,9 @@
                  (dispatch [:new-custom-variant! custom-id]))}
       "Add variant"]
      [:button {:on-click (fn [_]
+                           (dispatch [:remove-custom! custom-id]))}
+      "Delete"]
+     [:button {:on-click (fn [_]
                            (dispatch [:view-custom! custom-id]))}
       "Done"]]))
 
