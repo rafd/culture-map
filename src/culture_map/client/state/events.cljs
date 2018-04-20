@@ -59,6 +59,10 @@
     {:transact [{:variant/id variant-id
                  :variant/country-ids [{:country/id country-id}]}]}))
 
+(reg-event-fx :remove-custom-variant-country!
+  (fn [_ [_ custom-id variant-id country-id]]
+    {:transact [[:db/retract [:variant/id variant-id] :variant/country-ids [:country/id country-id]]]}))
+
 (reg-event-fx :new-custom-variant!
   (fn [_ [_ custom-id]]
     {:transact [{:db/id "variantid"

@@ -71,7 +71,10 @@
             (for [country (variant :variant/country-ids)]
               [:div.country
                {:key (country :country/id)}
-               (country :country/name)]))
+               (country :country/name) 
+               [:button 
+                {:on-click (fn [_] (dispatch [:remove-custom-variant-country! custom-id (variant :variant/id) (country :country/id)]))}
+                "×"]]))
           [add-country-view custom-id (variant :variant/id)]]))
      [:button {:on-click
                (fn [_]
