@@ -67,6 +67,9 @@
                    :on-change
                    (fn [e]
                      (dispatch [:update-custom-variant-name! custom-id (variant :variant/id) (.. e -target -value)]))}]
+          [:button 
+            {:on-click (fn [_] (dispatch [:remove-custom-variant! custom-id (variant :variant/id)]))}
+            "×"]
           (doall
             (for [country (variant :variant/country-ids)]
               [:div.country

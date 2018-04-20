@@ -58,6 +58,10 @@
                 {:custom/id custom-id
                  :custom/variants "variantid"}]}))
 
+(reg-event-fx :remove-custom-variant!
+  (fn [_ [_ custom-id variant-id]]
+    {:transact [[:db.fn/retractEntity [:variant/id variant-id]]]}))
+
 (reg-event-fx :update-custom-variant-name!
   (fn [_ [_ custom-id variant-id value]]
     {:transact [{:variant/id variant-id
