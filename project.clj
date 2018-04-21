@@ -13,7 +13,7 @@
 
                  ; client
                  [org.clojure/clojurescript "1.9.854"]
-                 [garden "1.3.2"]
+                 [garden "1.3.5"]
                  [reagent "0.8.0-alpha2"]
                  [re-posh "0.1.5"]
                  [datascript "0.16.4"]

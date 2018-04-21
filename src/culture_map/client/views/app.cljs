@@ -1,7 +1,8 @@
 (ns culture-map.client.views.app
   (:require
     [reagent.core :as r]
-    [culture-map.client.state.core :refer [subscribe dispatch]]))
+    [culture-map.client.state.core :refer [subscribe dispatch]]
+    [culture-map.client.views.styles :refer [styles-view]]))
 
 (defn customs-list-view []
   [:div.customs-list
@@ -95,6 +96,7 @@
 
 (defn app-view []
   [:div.app
+   [styles-view]
    [:h1 "Culture Map"]
    [customs-list-view]
    (let [[id data] @(subscribe [:page])]
