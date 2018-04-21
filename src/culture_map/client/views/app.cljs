@@ -6,14 +6,15 @@
 
 (defn customs-list-view []
   [:div.customs-list
-   (doall
-     (for [custom @(subscribe [:customs])]
-       [:div.custom
-        {:key (custom :custom/id)
-         :on-click
-         (fn [_]
-           (dispatch [:view-custom! (custom :custom/id)]))}
-        (custom :custom/name)]))
+   [:div.customs
+    (doall
+      (for [custom @(subscribe [:customs])]
+        [:div.custom
+         {:key (custom :custom/id)
+          :on-click
+          (fn [_]
+            (dispatch [:view-custom! (custom :custom/id)]))}
+         (custom :custom/name)]))]
    [:button {:on-click
              (fn [_]
                (dispatch [:new-custom!]))}
@@ -23,19 +24,23 @@
   (when-let [custom @(subscribe [:custom custom-id])]
     [:div.active-custom
      [:h1 (custom :custom/name)]
-     [:button 
+     [:img.map
+      {:src "/img/map.svg"}]
+     [:button.edit
       {:on-click (fn [_] (dispatch [:edit-custom! custom-id]))}
       "Edit"]
-     (doall
-       (for [variant (custom :custom/variants)]
-         [:div.variant
-          {:key (variant :variant/id)}
-          [:h2 (variant :variant/name)]
-          (doall
-            (for [country (variant :variant/country-ids)]
-              [:div.country
-               {:key (country :country/id)}
-               (country :country/name)]))]))]))
+     [:div.variants
+      (doall
+        (for [variant (custom :custom/variants)]
+          [:div.variant
+           {:key (variant :variant/id)}
+           [:h2 (variant :variant/name)]
+           [:div.countries
+            (doall
+              (for [country (variant :variant/country-ids)]
+                [:div.country
+                 {:key (country :country/id)}
+                 (country :country/name)]))]]))]]))
 
 (defn add-country-view [custom-id variant-id]
   (let [pick? (r/atom false)]
@@ -71,15 +76,15 @@
                    :on-change
                    (fn [e]
                      (dispatch [:update-custom-variant-name! custom-id (variant :variant/id) (.. e -target -value)]))}]
-          [:button 
+          [:button
             {:on-click (fn [_] (dispatch [:remove-custom-variant! custom-id (variant :variant/id)]))}
             "×"]
           (doall
             (for [country (variant :variant/country-ids)]
               [:div.country
                {:key (country :country/id)}
-               (country :country/name) 
-               [:button 
+               (country :country/name)
+               [:button
                 {:on-click (fn [_] (dispatch [:remove-custom-variant-country! custom-id (variant :variant/id) (country :country/id)]))}
                 "×"]]))
           [add-country-view custom-id (variant :variant/id)]]))
@@ -94,15 +99,20 @@
                            (dispatch [:view-custom! custom-id]))}
       "Done"]]))
 
+(defn sidebar-view []
+  [:div.sidebar
+   [:h1 "Culture Map"]
+   [customs-list-view]])
+
 (defn app-view []
   [:div.app
    [styles-view]
-   [:h1 "Culture Map"]
-   [customs-list-view]
-   (let [[id data] @(subscribe [:page])]
-     (case id
-       :home [:div]
-       :custom (if (data :editing?)
-                 [custom-editor-view (data :custom-id)]
-                 [custom-view (data :custom-id)])
-       nil))])
+   [sidebar-view]
+   [:div.content
+    (let [[id data] @(subscribe [:page])]
+      (case id
+        :home [:div]
+        :custom (if (data :editing?)
+                  [custom-editor-view (data :custom-id)]
+                  [custom-view (data :custom-id)])
+        nil))]])
