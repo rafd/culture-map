@@ -2,7 +2,7 @@
   (:require
     [garden.stylesheet :refer [at-import]]))
 
-(def colors-background "#ededed")
+(def colors-background "#f3f3f3")
 (def colors-text "#000")
 (def colors-sidebar-background "#fcfcfc")
 (def colors-accent "#4cafef")
@@ -10,9 +10,18 @@
 (def font-size-title "1rem")
 (def font-size-text "0.8rem")
 
+(defn >map []
+  [:>.map
+   {:width "100%"
+    :max-width "600px"
+    :min-height "300px"
+    :margin "1em auto"}
+
+   ["[data-cc]"
+    {:fill "#ccc"}]])
+
 (defn styles []
   [(at-import "https://fonts.googleapis.com/css?family=Open+Sans")
-
    [:body
     {:margin 0
      :font-family "'Open Sans'"
@@ -69,10 +78,7 @@
           :margin 0
           :text-align "center"}]
 
-        [:>.map
-         {:width "100%"
-          :max-width "600px"
-          :margin "1em 0"}]
+        (>map)
 
         [:>button.edit
          {:position "absolute"

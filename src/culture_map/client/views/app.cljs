@@ -2,7 +2,8 @@
   (:require
     [reagent.core :as r]
     [culture-map.client.state.core :refer [subscribe dispatch]]
-    [culture-map.client.views.styles :refer [styles-view]]))
+    [culture-map.client.views.styles :refer [styles-view]]
+    [culture-map.client.views.map :refer [map-view]]))
 
 (defn customs-list-view []
   [:div.customs-list
@@ -24,8 +25,15 @@
   (when-let [custom @(subscribe [:custom custom-id])]
     [:div.active-custom
      [:h1 (custom :custom/name)]
-     [:img.map
-      {:src "/img/map.svg"}]
+     [map-view (->> (custom :custom/variants)
+                    (map-indexed (fn [index variant]
+                                   (->> (variant :variant/country-ids)
+                                        (map (fn [country]
+                                               [(country :country/id) (case index
+                                                                        0 "red"
+                                                                        1 "blue")])))))
+
+                    (apply concat))]
      [:button.edit
       {:on-click (fn [_] (dispatch [:edit-custom! custom-id]))}
       "Edit"]
