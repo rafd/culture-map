@@ -22,17 +22,21 @@
                (dispatch [:new-custom!]))}
     "New custom"]])
 
+(defn color [custom variant]
+  (let [variants (custom :custom/variants)
+        index (.indexOf variants variant)]
+    (colors/map-variant-color index (count variants))))
+
 (defn custom-view [custom-id]
   (when-let [custom @(subscribe [:custom custom-id])]
     [:div.active-custom
      [:h1 (custom :custom/name)]
      [map-view (->> (custom :custom/variants)
-                    (map-indexed (fn [index variant]
-                                   (->> (variant :variant/country-ids)
-                                        (map (fn [country]
-                                               [(country :country/id)
-                                                (colors/map-variant-color index (count (custom :custom/variants)))])))))
-
+                    (map (fn [variant]
+                           (->> (variant :variant/country-ids)
+                                (map (fn [country]
+                                       [(country :country/id)
+                                        (color custom variant)])))))
                     (apply concat))]
      [:button.edit
       {:on-click (fn [_] (dispatch [:edit-custom! custom-id]))}
@@ -42,6 +46,7 @@
         (for [variant (custom :custom/variants)]
           [:div.variant
            {:key (variant :variant/id)}
+           [:div.color-square {:style {:background (color custom variant)}}]
            [:h2 (variant :variant/name)]
            [:div.countries
             (doall

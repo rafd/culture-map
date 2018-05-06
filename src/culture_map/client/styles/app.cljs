@@ -93,9 +93,17 @@
          [:>.variant
           {:flex-grow 1}
 
+          [:>.color-square
+           {:height "1em"
+            :width "1em"
+            :margin-left "-1.5em"
+            :margin-right "0.5em"
+            :display "inline-block"}]
+
           [:>h2
            {:font-size font-size-title
-            :margin 0}]
+            :margin 0
+            :display "inline-block"}]
 
           [:>.countries
            {:column-count 2
