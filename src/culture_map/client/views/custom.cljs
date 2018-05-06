@@ -34,7 +34,7 @@
                (dispatch [:update-custom-variant-name! (variant :variant/id) (.. e -target -value)]))}]
     [:h2 (variant :variant/name)]))
 
-(defn add-country-view [custom-id variant-id]
+(defn add-country-view [variant-id]
   (let [pick? (r/atom false)]
     (fn []
       (if @pick?
@@ -91,7 +91,7 @@
                     {:on-click (fn [_] (dispatch [:remove-custom-variant-country! (variant :variant/id) (country :country/id)]))}
                     "×"])]))
             (when editing?
-              [add-country-view custom-id (variant :variant/id)])]]))
+              [add-country-view (variant :variant/id)])]]))
       (when editing?
         [:button {:on-click
                   (fn [_]
