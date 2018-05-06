@@ -3,7 +3,7 @@
     [datascript.core :as d]
     [re-frame.core :refer [reg-fx reg-event-fx inject-cofx]]
     [culture-map.client.state.fx.ajax :refer [ajax-fx]]
-    [bloom.omni.eav :as eav]))
+    [culture-map.client.state.convert :as convert]))
 
 (defn key-by-id [coll]
   (reduce (fn [memo item]
@@ -29,6 +29,11 @@
     {:dispatch [:set-page! :custom {:custom-id id
                                     :editing? false}]}))
 
+(reg-event-fx :save-custom!
+  (fn [_ [_ custom-id]]
+    {:dispatch-n [[:view-custom! custom-id]
+                  [:-persist-custom! custom-id]]}))
+
 (reg-event-fx :edit-custom!
   (fn [_ [_ custom-id]]
     {:dispatch [:set-page! :custom {:custom-id custom-id
@@ -49,6 +54,13 @@
       {:transact [custom]
        :dispatch [:set-page! :custom {:custom-id (custom :custom/id)
                                       :editing? true}]})))
+
+(reg-event-fx :-persist-custom!
+  [(inject-cofx :ds)]
+  (fn [{ds :ds} [_ custom-id]]
+    {:ajax {:uri "/api/records"
+            :method :put
+            :params {:custom (convert/ds->custom ds custom-id)}}}))
 
 (reg-event-fx :remove-custom!
   [(inject-cofx :ds)]
@@ -74,6 +86,7 @@
   (fn [_ [_ custom-id]]
     {:transact [{:db/id "variantid"
                  :variant/country-ids []
+                 :variant/type "variant"
                  :variant/id (random-uuid)
                  :variant/name "variant"}
                 {:custom/id custom-id
@@ -99,23 +112,4 @@
 
 (reg-event-fx :handle-initial-data!
   (fn [_ [_ records]]
-    {:transact (->> records
-                    vec
-                    (eav/namespace-keys (fn [r]
-                                          (keyword (r :type))))
-                    (eav/recs->eavs (fn [r]
-                                      (let [abs (fn [i]
-                                                  (if (pos-int? i)
-                                                    i
-                                                    (* -1 i)))]
-                                        (abs (hash (or
-                                                     (r :custom/id)
-                                                     (r :variant/id)
-                                                     (r :country/id))))))
-                                    {:custom/id :id
-                                     :variant/id :id
-                                     :country/id :id
-                                     :custom/variants  :embed-many
-                                     :variant/country-ids :reference-many})
-                    (map (fn [eav]
-                             (concat [:db/add] eav))))}))
+    {:transact (convert/records->txs records)}))

@@ -9,4 +9,9 @@
 
     (GET "/records" _
       {:status 200
-       :body (db/get-records)})))
+       :body (db/get-records)})
+
+    (PUT "/records" [custom]
+      (db/save-record! custom)
+      {:status 200
+       :body "OK"})))

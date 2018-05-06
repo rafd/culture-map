@@ -20,7 +20,7 @@
 
 (defn edit-toggle-button-view [custom editing?]
   (if editing?
-    [:button.edit {:on-click (fn [_] (dispatch [:view-custom! (custom :custom/id)]))}
+    [:button.edit {:on-click (fn [_] (dispatch [:save-custom! (custom :custom/id)]))}
      "Done"]
     [:button.edit
      {:on-click (fn [_] (dispatch [:edit-custom! (custom :custom/id)]))}
