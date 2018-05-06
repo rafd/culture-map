@@ -44,7 +44,8 @@
                                 (reset! pick? false))}
           [:option {:value nil} ""]
           (doall
-            (for [country @(subscribe [:countries])]
+            (for [country (->> @(subscribe [:countries])
+                               (sort-by :country/name))]
               [:option {:key (country :country/id)
                         :value (country :country/id)}
                (country :country/name)]))]]
