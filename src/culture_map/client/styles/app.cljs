@@ -1,38 +1,43 @@
 (ns culture-map.client.styles.app
   (:require
-    [garden.stylesheet :refer [at-import]]))
-
-(def colors-background "#ededed")
-(def colors-text "#000")
-(def colors-sidebar-background "#fcfcfc")
-(def colors-accent "#4cafef")
+    [garden.stylesheet :refer [at-import]]
+    [culture-map.client.styles.colors :as colors]))
 
 (def font-size-title "1rem")
 (def font-size-text "0.8rem")
 
+(defn >map []
+  [:>.map
+   {:width "100%"
+    :max-width "600px"
+    :min-height "300px"
+    :margin "1em auto"}
+
+   ["[data-cc]"
+    {:fill colors/map-background}]])
+
 (defn styles []
   [(at-import "https://fonts.googleapis.com/css?family=Open+Sans")
-
    [:body
     {:margin 0
      :font-family "'Open Sans'"
-     :color colors-text}
+     :color colors/text}
 
     [:#app
 
      [:>.app
       {:display "flex"
        :font-size font-size-text
-       :background colors-background
+       :background colors/background
        :width "100%"
        :height "100%"}
 
       (let [pad "1rem"]
         [:>.sidebar
-         {:background colors-sidebar-background
+         {:background colors/sidebar-background
           :margin-left "2em"
           :padding pad
-          :border-left [[colors-accent "0.5em" "solid"]]}
+          :border-left [[colors/accent "0.5em" "solid"]]}
 
          [:>h1
           {:font-size font-size-title
@@ -49,7 +54,7 @@
              :line-height "1.5em"}
 
             [:&:hover
-             {:background colors-background
+             {:background colors/background
               :cursor "pointer"}]]]]])
 
       [:>.content
@@ -69,10 +74,7 @@
           :margin 0
           :text-align "center"}]
 
-        [:>.map
-         {:width "100%"
-          :max-width "600px"
-          :margin "1em 0"}]
+        (>map)
 
         [:>button.edit
          {:position "absolute"
@@ -91,9 +93,17 @@
          [:>.variant
           {:flex-grow 1}
 
+          [:>.color-square
+           {:height "1em"
+            :width "1em"
+            :margin-left "-1.5em"
+            :margin-right "0.5em"
+            :display "inline-block"}]
+
           [:>h2
            {:font-size font-size-title
-            :margin 0}]
+            :margin 0
+            :display "inline-block"}]
 
           [:>.countries
            {:column-count 2
