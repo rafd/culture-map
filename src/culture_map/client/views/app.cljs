@@ -5,20 +5,23 @@
     [culture-map.client.views.custom :refer [custom-view]]))
 
 (defn customs-list-view []
-  [:div.customs-list
-   [:div.customs
-    (doall
-      (for [custom @(subscribe [:customs])]
-        [:div.custom
-         {:key (custom :custom/id)
-          :on-click
-          (fn [_]
-            (dispatch [:view-custom! (custom :custom/id)]))}
-         (custom :custom/name)]))]
-   [:button {:on-click
-             (fn [_]
-               (dispatch [:new-custom!]))}
-    "New custom"]])
+  (let [[_ data] @(subscribe [:page])]
+    [:div.customs-list
+     [:div.customs
+      (doall
+        (for [custom @(subscribe [:customs])]
+          [:div.custom
+           {:class (when (= (custom :custom/id) (data :custom-id))
+                     "active")
+            :key (custom :custom/id)
+            :on-click
+            (fn [_]
+              (dispatch [:view-custom! (custom :custom/id)]))}
+           (custom :custom/name)]))]
+     [:button {:on-click
+               (fn [_]
+                 (dispatch [:new-custom!]))}
+      "New custom"]]))
 
 (defn sidebar-view []
   [:div.sidebar

@@ -5,6 +5,7 @@
 (def grey "#878E88")
 (def yellow "#F7CB15")
 (def dark "#233D4D")
+(def white "#FFF")
 
 (def map-background "#CCC")
 (def background "#f3f3f3")

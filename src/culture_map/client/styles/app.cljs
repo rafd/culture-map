@@ -53,6 +53,10 @@
              :height "1.5em"
              :line-height "1.5em"}
 
+            [:&.active
+             {:background [[colors/blue "!important"]]
+              :color colors/white}]
+
             [:&:hover
              {:background colors/background
               :cursor "pointer"}]]]]])
