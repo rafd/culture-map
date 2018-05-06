@@ -27,33 +27,29 @@
         index (.indexOf variants variant)]
     (colors/map-variant-color index (count variants))))
 
-(defn custom-view [custom-id]
-  (when-let [custom @(subscribe [:custom custom-id])]
-    [:div.active-custom
-     [:h1 (custom :custom/name)]
-     [map-view (->> (custom :custom/variants)
-                    (map (fn [variant]
-                           (->> (variant :variant/country-ids)
-                                (map (fn [country]
-                                       [(country :country/id)
-                                        (color custom variant)])))))
-                    (apply concat))]
-     [:button.edit
-      {:on-click (fn [_] (dispatch [:edit-custom! custom-id]))}
-      "Edit"]
-     [:div.variants
-      (doall
-        (for [variant (custom :custom/variants)]
-          [:div.variant
-           {:key (variant :variant/id)}
-           [:div.color-square {:style {:background (color custom variant)}}]
-           [:h2 (variant :variant/name)]
-           [:div.countries
-            (doall
-              (for [country (variant :variant/country-ids)]
-                [:div.country
-                 {:key (country :country/id)}
-                 (country :country/name)]))]]))]]))
+(defn custom-name [custom editing?]
+  (if editing?
+    [:input {:value (custom :custom/name)
+             :on-change
+             (fn [e]
+               (dispatch [:update-custom-name! (custom :custom/id) (.. e -target -value)]))}]
+    [:h1 (custom :custom/name)]))
+
+(defn edit-toggle-button [custom editing?]
+  (if editing?
+    [:button.edit {:on-click (fn [_] (dispatch [:view-custom! (custom :custom/id)]))}
+     "Done"]
+    [:button.edit
+     {:on-click (fn [_] (dispatch [:edit-custom! (custom :custom/id)]))}
+     "Edit"]))
+
+(defn variant-name [variant editing?]
+  (if editing?
+    [:input {:value (variant :variant/name)
+             :on-change
+             (fn [e]
+               (dispatch [:update-custom-variant-name! (variant :variant/id) (.. e -target -value)]))}]
+    [:h2 (variant :variant/name)]))
 
 (defn add-country-view [custom-id variant-id]
   (let [pick? (r/atom false)]
@@ -61,7 +57,7 @@
       (if @pick?
         [:div {:key 0}
          [:select {:on-change (fn [e]
-                                (dispatch [:add-custom-variant-country! custom-id variant-id (.. e -target -value)])
+                                (dispatch [:add-custom-variant-country! variant-id (.. e -target -value)])
                                 (reset! pick? false))}
           [:option {:value nil} ""]
           (doall
@@ -74,43 +70,50 @@
                     (reset! pick? true))}
          "Add country"]))))
 
-(defn custom-editor-view [custom-id]
+(defn custom-view [custom-id editing?]
   (when-let [custom @(subscribe [:custom custom-id])]
     [:div.active-custom
-     [:input {:value (custom :custom/name)
-              :on-change
-              (fn [e]
-                (dispatch [:update-custom-name! custom-id (.. e -target -value)]))}]
-     (doall
-       (for [variant (custom :custom/variants)]
-         [:div.variant
-          {:key (variant :variant/id)}
-          [:input {:value (variant :variant/name)
-                   :on-change
-                   (fn [e]
-                     (dispatch [:update-custom-variant-name! custom-id (variant :variant/id) (.. e -target -value)]))}]
-          [:button
-            {:on-click (fn [_] (dispatch [:remove-custom-variant! custom-id (variant :variant/id)]))}
-            "×"]
-          (doall
-            (for [country (variant :variant/country-ids)]
-              [:div.country
-               {:key (country :country/id)}
-               (country :country/name)
-               [:button
-                {:on-click (fn [_] (dispatch [:remove-custom-variant-country! custom-id (variant :variant/id) (country :country/id)]))}
-                "×"]]))
-          [add-country-view custom-id (variant :variant/id)]]))
-     [:button {:on-click
-               (fn [_]
-                 (dispatch [:new-custom-variant! custom-id]))}
-      "Add variant"]
-     [:button {:on-click (fn [_]
-                           (dispatch [:remove-custom! custom-id]))}
-      "Delete"]
-     [:button {:on-click (fn [_]
-                           (dispatch [:view-custom! custom-id]))}
-      "Done"]]))
+     [custom-name custom editing?]
+     [edit-toggle-button custom editing?]
+     (when editing?
+       [:button {:on-click (fn [_]
+                             (dispatch [:remove-custom! custom-id]))}
+        "Delete"])
+     [map-view (->> (custom :custom/variants)
+                    (map (fn [variant]
+                           (->> (variant :variant/country-ids)
+                                (map (fn [country]
+                                       [(country :country/id)
+                                        (color custom variant)])))))
+                    (apply concat))]
+     [:div.variants
+      (doall
+        (for [variant (custom :custom/variants)]
+          [:div.variant
+           {:key (variant :variant/id)}
+           [:div.color-square {:style {:background (color custom variant)}}]
+           [variant-name variant editing?]
+           (when editing?
+             [:button
+              {:on-click (fn [_] (dispatch [:remove-custom-variant! (variant :variant/id)]))}
+              "×"])
+           [:div.countries
+            (doall
+              (for [country (variant :variant/country-ids)]
+                [:div.country
+                 {:key (country :country/id)}
+                 (country :country/name)
+                 (when editing?
+                   [:button
+                    {:on-click (fn [_] (dispatch [:remove-custom-variant-country! (variant :variant/id) (country :country/id)]))}
+                    "×"])]))
+            (when editing?
+              [add-country-view custom-id (variant :variant/id)])]]))
+      (when editing?
+        [:button {:on-click
+                  (fn [_]
+                    (dispatch [:new-custom-variant! custom-id]))}
+         "Add variant"])]]))
 
 (defn sidebar-view []
   [:div.sidebar
@@ -125,7 +128,5 @@
     (let [[id data] @(subscribe [:page])]
       (case id
         :home [:div]
-        :custom (if (data :editing?)
-                  [custom-editor-view (data :custom-id)]
-                  [custom-view (data :custom-id)])
+        :custom [custom-view (data :custom-id) (data :editing?)]
         nil))]])

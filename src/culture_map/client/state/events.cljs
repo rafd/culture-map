@@ -55,7 +55,7 @@
   (fn [{ds :ds} [_ custom-id]]
     (let [variant-eids (d/q '[:find [?variant-eid ...]
                               :in $ ?custom-id
-                              :where 
+                              :where
                               [?custom-eid :custom/id ?custom-id]
                               [?custom-eid :custom/variants ?variant-eid]]
                              ds
@@ -80,21 +80,21 @@
                  :custom/variants "variantid"}]}))
 
 (reg-event-fx :remove-custom-variant!
-  (fn [_ [_ custom-id variant-id]]
+  (fn [_ [_ variant-id]]
     {:transact [[:db.fn/retractEntity [:variant/id variant-id]]]}))
 
 (reg-event-fx :update-custom-variant-name!
-  (fn [_ [_ custom-id variant-id value]]
+  (fn [_ [_ variant-id value]]
     {:transact [{:variant/id variant-id
                  :variant/name value}]}))
 
 (reg-event-fx :add-custom-variant-country!
-  (fn [_ [_ custom-id variant-id country-id]]
+  (fn [_ [_ variant-id country-id]]
     {:transact [{:variant/id variant-id
                  :variant/country-ids [{:country/id country-id}]}]}))
 
 (reg-event-fx :remove-custom-variant-country!
-  (fn [_ [_ custom-id variant-id country-id]]
+  (fn [_ [_ variant-id country-id]]
     {:transact [[:db/retract [:variant/id variant-id] :variant/country-ids [:country/id country-id]]]}))
 
 (reg-event-fx :handle-initial-data!

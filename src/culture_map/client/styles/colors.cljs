@@ -15,4 +15,5 @@
 (defn map-variant-color [index count]
   (case index
     0 red
-    1 yellow))
+    1 yellow
+    grey))
