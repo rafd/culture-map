@@ -10,7 +10,7 @@
         index (.indexOf variants variant)]
     (colors/map-variant-color index (count variants))))
 
-(defn custom-name [custom editing?]
+(defn custom-name-view [custom editing?]
   (if editing?
     [:input {:value (custom :custom/name)
              :on-change
@@ -18,7 +18,7 @@
                (dispatch [:update-custom-name! (custom :custom/id) (.. e -target -value)]))}]
     [:h1 (custom :custom/name)]))
 
-(defn edit-toggle-button [custom editing?]
+(defn edit-toggle-button-view [custom editing?]
   (if editing?
     [:button.edit {:on-click (fn [_] (dispatch [:view-custom! (custom :custom/id)]))}
      "Done"]
@@ -26,7 +26,7 @@
      {:on-click (fn [_] (dispatch [:edit-custom! (custom :custom/id)]))}
      "Edit"]))
 
-(defn variant-name [variant editing?]
+(defn variant-name-view [variant editing?]
   (if editing?
     [:input {:value (variant :variant/name)
              :on-change
@@ -56,8 +56,8 @@
 (defn custom-view [custom-id editing?]
   (when-let [custom @(subscribe [:custom custom-id])]
     [:div.active-custom
-     [custom-name custom editing?]
-     [edit-toggle-button custom editing?]
+     [custom-name-view custom editing?]
+     [edit-toggle-button-view custom editing?]
      (when editing?
        [:button {:on-click (fn [_]
                              (dispatch [:remove-custom! custom-id]))}
@@ -75,7 +75,7 @@
           [:div.variant
            {:key (variant :variant/id)}
            [:div.color-square {:style {:background (color custom variant)}}]
-           [variant-name variant editing?]
+           [variant-name-view variant editing?]
            (when editing?
              [:button
               {:on-click (fn [_] (dispatch [:remove-custom-variant! (variant :variant/id)]))}
