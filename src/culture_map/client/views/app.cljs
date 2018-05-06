@@ -3,7 +3,8 @@
     [reagent.core :as r]
     [culture-map.client.state.core :refer [subscribe dispatch]]
     [culture-map.client.views.styles :refer [styles-view]]
-    [culture-map.client.views.map :refer [map-view]]))
+    [culture-map.client.views.map :refer [map-view]]
+    [culture-map.client.styles.colors :as colors]))
 
 (defn customs-list-view []
   [:div.customs-list
@@ -29,9 +30,8 @@
                     (map-indexed (fn [index variant]
                                    (->> (variant :variant/country-ids)
                                         (map (fn [country]
-                                               [(country :country/id) (case index
-                                                                        0 "red"
-                                                                        1 "blue")])))))
+                                               [(country :country/id)
+                                                (colors/map-variant-color index (count (custom :custom/variants)))])))))
 
                     (apply concat))]
      [:button.edit

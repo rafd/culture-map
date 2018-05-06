@@ -1,11 +1,7 @@
 (ns culture-map.client.styles.app
   (:require
-    [garden.stylesheet :refer [at-import]]))
-
-(def colors-background "#f3f3f3")
-(def colors-text "#000")
-(def colors-sidebar-background "#fcfcfc")
-(def colors-accent "#4cafef")
+    [garden.stylesheet :refer [at-import]]
+    [culture-map.client.styles.colors :as colors]))
 
 (def font-size-title "1rem")
 (def font-size-text "0.8rem")
@@ -18,30 +14,30 @@
     :margin "1em auto"}
 
    ["[data-cc]"
-    {:fill "#ccc"}]])
+    {:fill colors/map-background}]])
 
 (defn styles []
   [(at-import "https://fonts.googleapis.com/css?family=Open+Sans")
    [:body
     {:margin 0
      :font-family "'Open Sans'"
-     :color colors-text}
+     :color colors/text}
 
     [:#app
 
      [:>.app
       {:display "flex"
        :font-size font-size-text
-       :background colors-background
+       :background colors/background
        :width "100%"
        :height "100%"}
 
       (let [pad "1rem"]
         [:>.sidebar
-         {:background colors-sidebar-background
+         {:background colors/sidebar-background
           :margin-left "2em"
           :padding pad
-          :border-left [[colors-accent "0.5em" "solid"]]}
+          :border-left [[colors/accent "0.5em" "solid"]]}
 
          [:>h1
           {:font-size font-size-title
@@ -58,7 +54,7 @@
              :line-height "1.5em"}
 
             [:&:hover
-             {:background colors-background
+             {:background colors/background
               :cursor "pointer"}]]]]])
 
       [:>.content
