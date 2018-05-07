@@ -10,7 +10,6 @@
   [:>.map
    {:width "100%"
     :max-width "600px"
-    :min-height "300px"
     :margin "1em auto"}
 
    ["[data-cc]"
@@ -51,6 +50,7 @@
            [:>.custom
             {:padding [[0 pad]]
              :height "1.5em"
+             :white-space "nowrap"
              :line-height "1.5em"}
 
             [:&.active
