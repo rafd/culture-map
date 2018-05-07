@@ -1,0 +1,6 @@
+---
+applications:
+- name: culture-map
+  memory: 768M
+  path: target/culture-map-0.0.1-standalone.jar
+  buildpack: https://github.com/cannawen/java-buildpack
