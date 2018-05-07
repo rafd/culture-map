@@ -42,24 +42,22 @@
           {:font-size font-size-title
            :margin 0}]
 
-         [:>.customs-list
+         [:>.list
+          {:margin [[0 (str "-" pad)]]}
 
-          [:>.customs
-           {:margin [[0 (str "-" pad)]]}
+          [:>.item
+           {:padding [[0 pad]]
+            :height "1.5em"
+            :white-space "nowrap"
+            :line-height "1.5em"}
 
-           [:>.custom
-            {:padding [[0 pad]]
-             :height "1.5em"
-             :white-space "nowrap"
-             :line-height "1.5em"}
+           [:&.active
+            {:background [[colors/blue "!important"]]
+             :color colors/white}]
 
-            [:&.active
-             {:background [[colors/blue "!important"]]
-              :color colors/white}]
-
-            [:&:hover
-             {:background colors/background
-              :cursor "pointer"}]]]]])
+           [:&:hover
+            {:background colors/background
+             :cursor "pointer"}]]]])
 
       [:>.content
        {:height "100%"

@@ -7,44 +7,43 @@
 
 (defn customs-list-view []
   (let [[_ data] @(subscribe [:page])]
-    [:div.customs-list
-     [:div.customs
-      (doall
-        (for [custom @(subscribe [:customs])]
-          [:div.custom
-           {:class (when (= (custom :custom/id) (data :custom-id))
-                     "active")
-            :key (custom :custom/id)
-            :on-click
-            (fn [_]
-              (dispatch [:view-custom! (custom :custom/id)]))}
-           (custom :custom/name)]))]
-     [:button {:on-click
-               (fn [_]
-                 (dispatch [:new-custom!]))}
-      "New custom"]]))
+    [:div.customs.list
+     (doall
+       (for [custom @(subscribe [:customs])]
+         [:div.custom.item
+          {:class (when (= (custom :custom/id) (data :custom-id))
+                    "active")
+           :key (custom :custom/id)
+           :on-click
+           (fn [_]
+             (dispatch [:view-custom! (custom :custom/id)]))}
+          (custom :custom/name)]))]))
+
 
 (defn countries-list-view []
   (let [[_ data] @(subscribe [:page])]
-    [:div.customs-list
-     [:div.customs
-      (doall
-        (for [country @(subscribe [:sidebar-countries])]
-         [:div.custom
-          {:class (when (= (country :country/id) (data :country-id))
-                    "active")
-           :key (country :country/id)
-           :on-click
-           (fn [_]
-             (dispatch [:view-country! (country :country/id)]))}
-          (country :country/name)]))]]))
+    [:div.countries.list
+     (doall
+       (for [country @(subscribe [:sidebar-countries])]
+        [:div.country.item
+         {:class (when (= (country :country/id) (data :country-id))
+                   "active")
+          :key (country :country/id)
+          :on-click
+          (fn [_]
+            (dispatch [:view-country! (country :country/id)]))}
+         (country :country/name)]))]))
 
 (defn sidebar-view []
   [:div.sidebar
-   [:h1 "Cultures"]
+   [:h1 "Customs"]
    [customs-list-view]
    [:h1 "Countries"]
-   [countries-list-view]])
+   [countries-list-view]
+   [:button {:on-click
+             (fn [_]
+               (dispatch [:new-custom!]))}
+    "New custom"]])
 
 (defn app-view []
   [:div.app
