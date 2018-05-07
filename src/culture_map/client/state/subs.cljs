@@ -48,7 +48,8 @@
 (reg-sub-pull :countries
   '[:find [?e ...]
     :where [?e :country/id _]]
-  '[*])
+  '[:country/id
+    :country/name])
 
 (reg-sub-pull :custom
   '[:find ?custom .
