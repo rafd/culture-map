@@ -29,15 +29,15 @@
     [:div.customs-list
      [:div.customs
       (doall
-        (for [country @(subscribe [:countries])]
-          [:div.custom
-           {:class (when (= (country :country/id) (data :country-id))
-                     "active")
-            :key (country :country/id)
-            :on-click
-            (fn [_]
-              (dispatch [:view-country! (country :country/id)]))}
-           (country :country/name)]))]]))
+        (for [country @(subscribe [:sidebar-countries])]
+         [:div.custom
+          {:class (when (= (country :country/id) (data :country-id))
+                    "active")
+           :key (country :country/id)
+           :on-click
+           (fn [_]
+             (dispatch [:view-country! (country :country/id)]))}
+          (country :country/name)]))]]))
 
 (defn sidebar-view []
   [:div.sidebar

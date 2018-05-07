@@ -71,3 +71,22 @@
     :where [?e :db/global :page]
            [?e :page/id ?id]
            [?e :page/data ?data]])
+
+(reg-sub-raw :sidebar-countries
+  (fn [_ _]
+    (->> (p/q '[:find ?country-id ?country-name (count ?custom)
+                :where
+                [?country :country/id ?country-id]
+                [?country :country/name ?country-name]
+                [?variant :variant/country-ids ?country]
+                [?custom :custom/variants ?variant]]
+           @store)
+         deref
+         (filter (fn [[_ _ count]]
+                   (< 3 count)))
+         (map (fn [[id name _]]
+                {:country/id id
+                 :country/name name}))
+         (sort-by :country/name)
+         r/reaction)))
+
