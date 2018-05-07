@@ -24,6 +24,10 @@
                  :page/id id
                  :page/data data}]}))
 
+(reg-event-fx :view-country!
+  (fn [_ [_ id]]
+    {:dispatch [:set-page! :country {:country-id id}]}))
+
 (reg-event-fx :view-custom!
   (fn [_ [_ id]]
     {:dispatch [:set-page! :custom {:custom-id id
