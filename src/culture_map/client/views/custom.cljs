@@ -1,9 +1,9 @@
 (ns culture-map.client.views.custom
   (:require
     [reagent.core :as r]
+    [re-frame.core :refer [subscribe dispatch]]
     [culture-map.client.views.map :refer [map-view]]
     [culture-map.client.styles.colors :as colors]
-    [culture-map.client.state.core :refer [subscribe dispatch]]
     [culture-map.client.state.routes :as routes]))
 
 (defn color [custom variant]

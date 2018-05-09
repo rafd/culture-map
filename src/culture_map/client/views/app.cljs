@@ -1,6 +1,6 @@
 (ns culture-map.client.views.app
   (:require
-    [culture-map.client.state.core :refer [subscribe dispatch]]
+    [re-frame.core :refer [subscribe dispatch]]
     [culture-map.client.views.styles :refer [styles-view]]
     [culture-map.client.views.custom :refer [custom-view]]
     [culture-map.client.views.country :refer [country-view]]

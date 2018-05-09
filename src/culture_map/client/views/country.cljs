@@ -1,6 +1,6 @@
 (ns culture-map.client.views.country
   (:require
-    [culture-map.client.state.core :refer [subscribe]]))
+    [re-frame.core :refer [subscribe]]))
 
 (defn country-view [country-id]
   (when-let [country @(subscribe [:country country-id])]

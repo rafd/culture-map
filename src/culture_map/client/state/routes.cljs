@@ -1,7 +1,7 @@
 (ns culture-map.client.state.routes
   (:require
     [bloom.omni.router :as router]
-    [culture-map.client.state.core :refer [dispatch]]))
+    [re-frame.core :refer [dispatch]]))
 
 (router/defroute index-path "/" []
   (dispatch [:set-page! :home {}]))

@@ -1,7 +1,8 @@
 (ns culture-map.client.core
   (:require
     [reagent.core :as r]
-    [culture-map.client.state.core :refer [dispatch-sync]]
+    [re-frame.core :refer [dispatch-sync]]
+    [culture-map.client.state.core] ; to initialize state
     [culture-map.client.views.app :refer [app-view]]))
 
 (enable-console-print!)
