@@ -45,6 +45,15 @@
                        :variant/name
                        {:variant/country-ids [:country/id]}]}])
 
+(reg-sub-pull :customs+
+  '[:find [?custom ...]
+    :where [?custom :custom/id _]]
+  '[:custom/id
+    :custom/name
+    {:custom/variants [:variant/id
+                       :variant/name
+                       {:variant/country-ids [:country/id]}]}])
+
 (reg-sub-pull :countries
   '[:find [?country ...]
     :where [?country :country/id _]]

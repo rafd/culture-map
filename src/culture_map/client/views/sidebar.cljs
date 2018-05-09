@@ -32,10 +32,11 @@
    [:h1
     [:a {:href (routes/index-path)} "Culture Map"]]
    [:h2 "Customs"]
-   [customs-list-view]
-   [:h2 "Countries"]
-   [countries-list-view]
    [:button {:on-click
              (fn [_]
                (dispatch [:new-custom!]))}
-    "New custom"]])
+    "New custom"]
+   [customs-list-view]
+   [:h2 "Countries"]
+   [countries-list-view]])
+

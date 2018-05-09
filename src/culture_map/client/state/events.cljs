@@ -34,6 +34,11 @@
     {:router [:navigate! (routes/view-custom-path {:id custom-id})]
      :dispatch [:-persist-custom! custom-id]}))
 
+(reg-event-fx :save-country!
+  (fn [_ [_ country-id]]
+    {:router [:navigate! (routes/view-country-path {:id country-id})]}))
+     ;:dispatch [:-persist-custom! custom-id]}))
+
 (reg-event-fx :get-initial-data!
   (fn [_ _]
     {:ajax {:uri "/api/records"
@@ -48,6 +53,14 @@
                   :custom/variants []}]
       {:transact [custom]
        :router [:navigate! (routes/edit-custom-path {:id (custom :custom/id)})]})))
+
+(reg-event-fx :country-new-custom!
+  (fn [_ [_ country-id]]
+    (let [custom {:custom/id (random-uuid)
+                  :custom/name "new-custom"
+                  :custom/type "custom"
+                  :custom/variants []}]
+      {:transact [custom]})))
 
 (reg-event-fx :-persist-custom!
   [(inject-cofx :ds)]

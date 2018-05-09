@@ -15,5 +15,5 @@
       (case id
         :home [:div]
         :custom [custom-view (data :custom-id) (data :editing?)]
-        :country [country-view (data :country-id)]
+        :country [country-view (data :country-id) (data :editing?)]
         nil))]])
