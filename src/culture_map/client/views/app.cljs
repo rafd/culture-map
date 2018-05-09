@@ -3,42 +3,40 @@
     [culture-map.client.state.core :refer [subscribe dispatch]]
     [culture-map.client.views.styles :refer [styles-view]]
     [culture-map.client.views.custom :refer [custom-view]]
-    [culture-map.client.views.country :refer [country-view]]))
+    [culture-map.client.views.country :refer [country-view]]
+    [culture-map.client.state.routes :as routes]))
 
 (defn customs-list-view []
   (let [[_ data] @(subscribe [:page])]
     [:div.customs.list
      (doall
        (for [custom @(subscribe [:customs])]
-         [:div.custom.item
+         [:a.custom.item
           {:class (when (= (custom :custom/id) (data :custom-id))
                     "active")
            :key (custom :custom/id)
-           :on-click
-           (fn [_]
-             (dispatch [:view-custom! (custom :custom/id)]))}
+           :href (routes/view-custom-path {:id (custom :custom/id)})}
           (custom :custom/name)]))]))
-
 
 (defn countries-list-view []
   (let [[_ data] @(subscribe [:page])]
     [:div.countries.list
      (doall
        (for [country @(subscribe [:sidebar-countries])]
-        [:div.country.item
+        [:a.country.item
          {:class (when (= (country :country/id) (data :country-id))
                    "active")
           :key (country :country/id)
-          :on-click
-          (fn [_]
-            (dispatch [:view-country! (country :country/id)]))}
+          :href (routes/view-country-path {:id (country :country/id)})}
          (country :country/name)]))]))
 
 (defn sidebar-view []
   [:div.sidebar
-   [:h1 "Customs"]
+   [:h1
+    [:a {:href (routes/index-path)} "Culture Map"]]
+   [:h2 "Customs"]
    [customs-list-view]
-   [:h1 "Countries"]
+   [:h2 "Countries"]
    [countries-list-view]
    [:button {:on-click
              (fn [_]

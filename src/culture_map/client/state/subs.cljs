@@ -10,21 +10,21 @@
   [sub-name query-pattern pull-pattern]
   (reg-sub-raw sub-name
     (fn [_ [_ & args]]
-      ; result should be: id, nil, [id ...] or []
-      (let [result (apply p/q query-pattern @store args)]
-        (cond
-          (vector? @result) ; [id ...] or []
-          (->> @result
-               (map (fn [id]
-                      @(p/pull @store pull-pattern id)))
-               doall
-               r/reaction)
+      (r/reaction
+        ; result should be: id, nil, [id ...] or []
+        (let [result (apply p/q query-pattern @store args)]
+          (cond
+            (vector? @result) ; [id ...] or []
+            (->> @result
+              (map (fn [id]
+                     @(p/pull @store pull-pattern id)))
+              doall)
 
-          (some? @result) ; id
-          (p/pull @store pull-pattern @result)
+            (some? @result) ; id
+            @(p/pull @store pull-pattern @result)
 
-          :else ; nil
-          result)))))
+            :else ; nil
+            nil))))))
 
 (reg-sub-pull :country
   '[:find ?country .

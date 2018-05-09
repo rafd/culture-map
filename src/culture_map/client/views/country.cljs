@@ -3,11 +3,10 @@
     [culture-map.client.state.core :refer [subscribe]]))
 
 (defn country-view [country-id]
-  (let [country @(subscribe [:country country-id])
-        customs @(subscribe [:country-customs country-id])]
+  (when-let [country @(subscribe [:country country-id])]
     [:div
      [:h1 (country :country/name)]
-     (for [custom customs]
+     (for [custom @(subscribe [:country-customs country-id])]
        [:div {:key (custom :custom/id)}
         [:h2 (custom :custom/name)]
         (for [variant (->> (custom :custom/variants)

@@ -40,13 +40,22 @@
 
          [:>h1
           {:font-size font-size-title
-           :margin 0}]
+           :margin 0}
+
+          [:>a
+           {:text-decoration "none"}]]
+
+         [:>h2
+          {:font-size font-size-title
+           :margin [["1em" 0 "0.5em"]]}]
 
          [:>.list
           {:margin [[0 (str "-" pad)]]}
 
           [:>.item
            {:padding [[0 pad]]
+            :display "block"
+            :text-decoration "none"
             :height "1.5em"
             :white-space "nowrap"
             :line-height "1.5em"}
@@ -78,7 +87,7 @@
 
         (>map)
 
-        [:>button.edit
+        [:>.edit
          {:position "absolute"
           :top 0
           :right 0}]

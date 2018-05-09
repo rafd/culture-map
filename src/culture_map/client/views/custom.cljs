@@ -3,7 +3,8 @@
     [reagent.core :as r]
     [culture-map.client.views.map :refer [map-view]]
     [culture-map.client.styles.colors :as colors]
-    [culture-map.client.state.core :refer [subscribe dispatch]]))
+    [culture-map.client.state.core :refer [subscribe dispatch]]
+    [culture-map.client.state.routes :as routes]))
 
 (defn color [custom variant]
   (let [variants (custom :custom/variants)
@@ -22,8 +23,8 @@
   (if editing?
     [:button.edit {:on-click (fn [_] (dispatch [:save-custom! (custom :custom/id)]))}
      "Done"]
-    [:button.edit
-     {:on-click (fn [_] (dispatch [:edit-custom! (custom :custom/id)]))}
+    [:a.edit
+     {:href (routes/edit-custom-path {:id (custom :custom/id)})}
      "Edit"]))
 
 (defn variant-name-view [variant editing?]
