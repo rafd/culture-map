@@ -25,4 +25,4 @@ In terminal, run `rlwrap lein figwheel`
 
 ## View it in action
 
-CI build: http://culture-map.cannawen.com/
+CI build: http://culture-map.cfapps.io/
