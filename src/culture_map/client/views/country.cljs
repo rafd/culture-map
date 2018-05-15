@@ -48,7 +48,12 @@
         (for [variant (custom :custom/variants)]
           [:span {:key (str (variant :variant/id) country-id)}
            [:input {:type "checkbox"
-                    :checked (when (variant-selected? variant custom country-id) "checked")}]
+                    :checked (variant-selected? variant custom country-id)
+                    :on-change
+                    (fn [_]
+                      (if (variant-selected? variant custom country-id)
+                        (dispatch [:remove-custom-variant-country! (variant :variant/id) country-id])
+                        (dispatch [:add-custom-variant-country! (variant :variant/id) country-id])))}]
            (variant :variant/name)])])]))
 
 (defn country-view [country-id editing?]
