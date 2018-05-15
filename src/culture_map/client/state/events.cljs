@@ -35,9 +35,15 @@
      :dispatch [:-persist-custom! custom-id]}))
 
 (reg-event-fx :save-country!
-  (fn [_ [_ country-id]]
-    {:router [:navigate! (routes/view-country-path {:id country-id})]}))
-     ;:dispatch [:-persist-custom! custom-id]}))
+  [(inject-cofx :ds)]
+  (fn [{ds :ds} [_ country-id]]
+    (let [custom-ids (d/q '[:find [?custom-id ...]
+                            :where
+                            [_ :custom/id ?custom-id]]
+                       ds)]
+      {:router [:navigate! (routes/view-country-path {:id country-id})]
+       :dispatch-n (for [custom-id custom-ids]
+                     [:-persist-custom! custom-id])})))
 
 (reg-event-fx :get-initial-data!
   (fn [_ _]
